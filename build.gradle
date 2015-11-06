@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'jacoco'
+
+sourceCompatibility = 1.7
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+  testCompile 'org.apache.commons:commons-lang3:3.4',
+              'org.mockito:mockito-all:1.10.19',
+              'junit:junit:4.12'
+}
+
+eclipse {
+  classpath {
+    downloadJavadoc = true
+    downloadSources = true
+  }
+}
+
+test.finalizedBy 'jacocoTestReport'
+test.outputs.upToDateWhen { false }
+jacocoTestReport {
+  reports {
+    xml.enabled false
+    csv.enabled false
+    html.destination "${buildDir}/coverage"
+  }
+}
