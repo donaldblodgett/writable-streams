@@ -3,6 +3,7 @@
 bin
 build
 .gradle
+gradle.properties
 
 # IDE generated files #
 #######################

@@ -196,7 +196,7 @@ public final class WritableReader extends Reader {
    * circular buffer is not empty.
    * 
    * @return <code>true</code> if the next
-   *         <code>read()<code> is guaranteed not to block for
+   *         <code>read()</code> is guaranteed not to block for
    *         input, <code>false</code> otherwise. Note that returning false does
    *         not guarantee that the next read will block.
    * @throws IOException

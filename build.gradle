@@ -1,8 +1,11 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'jacoco'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 sourceCompatibility = 1.7
+group = 'com.donaldblodgett.io'
 version = '1.0'
 
 repositories {
@@ -23,11 +26,72 @@ eclipse {
 }
 
 test.finalizedBy 'jacocoTestReport'
-test.outputs.upToDateWhen { false }
 jacocoTestReport {
   reports {
     xml.enabled false
     csv.enabled false
     html.destination "${buildDir}/coverage"
+  }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+  from sourceSets.main.allSource
+  classifier = 'sources'
+}
+
+artifacts {
+  archives jar
+  archives javadocJar
+  archives sourcesJar
+}
+
+signing {
+  sign configurations.archives
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment {
+        MavenDeployment deployment -> signing.signPom(deployment)
+      }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: sonatypeUsername, password: sonatypePassword)
+      }
+
+      pom.project {
+         name 'WritableStreams'
+         packaging 'jar'
+         description 'WritableStreams is a utility to wrap PipedStreams'
+         url 'https://github.com/donaldblodgett/writable-streams'
+
+         scm {
+           url 'scm:git@github.com:donaldblodgett/writable-streams.git'
+           connection 'scm:git@github.com:donaldblodgett/writable-streams.git'
+           developerConnection 'scm:git@github.com:donaldblodgett/writable-streams.git'
+         }
+
+         licenses {
+           license {
+             name 'The Apache Software License, Version 2.0'
+             url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+             distribution 'repo'
+           }
+         }
+
+         developers {
+           developer {
+             id 'donaldblodgett'
+             name 'Donald Blodgett'
+           }
+         }
+       }
+    }
   }
 }
